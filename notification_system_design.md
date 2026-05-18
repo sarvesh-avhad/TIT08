@@ -226,3 +226,222 @@ Use WebSockets (Socket.IO) for real-time communication.
   "error": "Invalid request"
 }
 ```
+
+
+---
+
+# Stage 2
+
+# Database Design and Storage Strategy
+
+## Suggested Database
+
+I would use PostgreSQL as the primary relational database.
+
+## Why PostgreSQL?
+
+1. ACID compliance ensures reliable transactions
+2. Strong support for indexing and query optimization
+3. Efficient handling of relational data
+4. Supports large-scale notification systems
+5. Better performance for filtering and pagination
+6. JSON support for flexible metadata storage
+7. Highly scalable with partitioning support
+
+---
+
+# Database Schema
+
+## Students Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | BIGINT | Primary Key |
+| name | VARCHAR(100) | Student Name |
+| email | VARCHAR(255) | Student Email |
+| created_at | TIMESTAMP | Account creation time |
+
+---
+
+## Notifications Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | UUID | Primary Key |
+| student_id | BIGINT | Foreign Key |
+| notification_type | VARCHAR(20) | Event / Result / Placement |
+| message | TEXT | Notification message |
+| is_read | BOOLEAN | Read status |
+| created_at | TIMESTAMP | Notification timestamp |
+
+---
+
+# SQL Table Creation Queries
+
+## Create Students Table
+
+```sql
+CREATE TABLE students (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+## Create Notifications Table
+
+```sql
+CREATE TABLE notifications (
+    id UUID PRIMARY KEY,
+    student_id BIGINT REFERENCES students(id),
+    notification_type VARCHAR(20),
+    message TEXT,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+# Indexing Strategy
+
+```sql
+CREATE INDEX idx_student_notifications
+ON notifications(student_id, is_read, created_at);
+```
+
+Purpose:
+- Faster unread notification retrieval
+- Faster sorting by timestamp
+- Better filtering performance
+
+---
+
+# API Queries
+
+## Fetch All Notifications
+
+```sql
+SELECT *
+FROM notifications
+WHERE student_id = 1042
+ORDER BY created_at DESC
+LIMIT 10 OFFSET 0;
+```
+
+---
+
+## Fetch Unread Notifications
+
+```sql
+SELECT *
+FROM notifications
+WHERE student_id = 1042
+AND is_read = FALSE
+ORDER BY created_at DESC;
+```
+
+---
+
+## Mark Notification as Read
+
+```sql
+UPDATE notifications
+SET is_read = TRUE
+WHERE id = 'notification-id';
+```
+
+---
+
+## Filter Notifications by Type
+
+```sql
+SELECT *
+FROM notifications
+WHERE student_id = 1042
+AND notification_type = 'Placement'
+ORDER BY created_at DESC;
+```
+
+---
+
+# Scalability Problems as Data Grows
+
+As the number of students and notifications increases, the following issues may occur:
+
+1. Slow query performance
+2. Increased database load
+3. Higher storage consumption
+4. Longer response times
+5. Increased indexing overhead
+
+---
+
+# Solutions for Scaling
+
+## 1. Database Indexing
+
+Indexes improve search and filtering speed.
+
+Benefits:
+- Faster queries
+- Better sorting performance
+
+Tradeoff:
+- Slightly slower inserts
+
+---
+
+## 2. Pagination
+
+Fetch limited notifications per request.
+
+Benefits:
+- Reduces payload size
+- Improves frontend performance
+
+---
+
+## 3. Caching
+
+Use Redis caching for frequently accessed notifications.
+
+Benefits:
+- Reduced DB load
+- Faster response times
+
+---
+
+## 4. Database Partitioning
+
+Partition notifications table by date or student ID.
+
+Benefits:
+- Faster large-scale queries
+- Better storage management
+
+---
+
+## 5. Asynchronous Processing
+
+Use message queues like RabbitMQ or Kafka for bulk notifications.
+
+Benefits:
+- Improved scalability
+- Non-blocking processing
+
+---
+
+# Recommended Architecture
+
+Frontend → Backend API → PostgreSQL Database
+
+For real-time notifications:
+
+Frontend ↔ WebSocket Server ↔ Backend
+
+
+
