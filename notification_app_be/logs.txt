@@ -98,3 +98,7 @@ URL: /api/notifications/priority
 [2026-05-18T10:19:26.182Z]
 Method: GET
 URL: /api/notifications/priority
+
+[2026-05-18T10:22:42.336Z]
+Method: GET
+URL: /api/notifications/priority
