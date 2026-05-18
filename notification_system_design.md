@@ -647,3 +647,239 @@ Best production strategy:
 3. Redis caching
 4. Partitioning
 5. Async notification processing
+
+
+---
+
+# Stage 4
+
+# Improving Notification Fetch Performance
+
+Currently, notifications are fetched from the database on every page load for every student.
+
+As the number of users increases, this creates heavy database load and poor user experience.
+
+---
+
+# Problems In Current System
+
+1. Excessive database queries
+2. Increased response time
+3. High server load
+4. Poor scalability
+5. Slow frontend rendering
+6. Repeated fetching of unchanged data
+
+---
+
+# Proposed Solutions
+
+## 1. Redis Caching
+
+Store frequently accessed notifications in Redis cache.
+
+## Flow
+
+1. User requests notifications
+2. Backend checks Redis cache
+3. If cache exists:
+   - return cached data
+4. Otherwise:
+   - fetch from database
+   - store in Redis
+   - return response
+
+---
+
+# Benefits
+
+- Reduces database load
+- Faster response time
+- Better scalability
+- Improved user experience
+
+---
+
+# Tradeoffs
+
+- Additional infrastructure required
+- Cache invalidation complexity
+- Increased memory usage
+
+---
+
+# Example Architecture
+
+Frontend → Backend → Redis Cache → PostgreSQL
+
+---
+
+# 2. Pagination
+
+Instead of fetching all notifications, fetch limited records.
+
+## Example
+
+```http
+GET /notifications?page=1&limit=10
+```
+
+---
+
+# Benefits
+
+- Smaller response payload
+- Faster API response
+- Reduced frontend rendering load
+
+---
+
+# Tradeoffs
+
+- Multiple API calls required
+- Complex frontend pagination handling
+
+---
+
+# 3. Lazy Loading / Infinite Scroll
+
+Load notifications only when needed.
+
+## Flow
+
+1. Initially load first 10 notifications
+2. Fetch more while scrolling
+
+---
+
+# Benefits
+
+- Faster initial page load
+- Better user experience
+- Reduced unnecessary data transfer
+
+---
+
+# Tradeoffs
+
+- More frontend complexity
+- Scroll state management required
+
+---
+
+# 4. Real-Time Notifications Using WebSockets
+
+Use Socket.IO or WebSockets to push new notifications instantly.
+
+Instead of repeatedly polling APIs:
+- backend pushes updates automatically
+
+---
+
+# Benefits
+
+- Instant notification delivery
+- Reduced repeated API requests
+- Better real-time experience
+
+---
+
+# Tradeoffs
+
+- Persistent connections required
+- More backend memory usage
+- Scaling WebSocket servers is harder
+
+---
+
+# 5. Database Indexing
+
+Indexes improve filtering and sorting performance.
+
+Recommended Index:
+
+```sql
+CREATE INDEX idx_notifications_student_created
+ON notifications(studentID, createdAt);
+```
+
+---
+
+# Benefits
+
+- Faster query execution
+- Reduced database scan time
+
+---
+
+# Tradeoffs
+
+- Slightly slower inserts/updates
+- Additional storage usage
+
+---
+
+# 6. Notification Read Status Synchronization
+
+Store viewed notifications locally on frontend.
+
+Approach:
+- Use localStorage/sessionStorage
+- Mark already viewed notifications without extra DB calls
+
+---
+
+# Benefits
+
+- Reduced backend requests
+- Faster UI updates
+
+---
+
+# Tradeoffs
+
+- Browser storage dependency
+- Data may reset after clearing cache
+
+---
+
+# Recommended Production Architecture
+
+## Notification Fetching Flow
+
+Frontend
+↓
+Backend API
+↓
+Redis Cache
+↓
+PostgreSQL
+
+---
+
+## Real-Time Flow
+
+Backend
+↓
+WebSocket Server
+↓
+Frontend Client
+
+---
+
+# Final Recommendation
+
+For large-scale systems:
+
+1. Redis caching
+2. Pagination
+3. WebSockets
+4. Infinite scrolling
+5. Optimized indexing
+6. Lazy loading
+
+Together these significantly improve:
+- scalability
+- performance
+- user experience
+- database efficiency
