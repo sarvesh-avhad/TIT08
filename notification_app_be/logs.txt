@@ -1,0 +1,8 @@
+
+[2026-05-18T08:55:03.168Z]
+Method: GET
+URL: /
+
+[2026-05-18T08:55:03.254Z]
+Method: GET
+URL: /favicon.ico
