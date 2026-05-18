@@ -92,6 +92,7 @@ npm run dev
 ---
 
 # Screenshots
+  - Check the Screenshots folder in main repo
 
 ## Dashboard
 - Priority notifications
@@ -107,3 +108,5 @@ npm run dev
 # Author
 
 Sarvesh Avhad
+sarveshavhad4@gmail.com
+9307790671
