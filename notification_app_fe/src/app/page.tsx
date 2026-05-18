@@ -83,7 +83,6 @@ export default function Home() {
           {notifications.map((notification) => (
 
             <Grid
-              item
               xs={12}
               key={notification.ID}
             >
@@ -98,9 +97,11 @@ export default function Home() {
                 <CardContent>
 
                   <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center"
+                    }}
                   >
 
                     <Typography

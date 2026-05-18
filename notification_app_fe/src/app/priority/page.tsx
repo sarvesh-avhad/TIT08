@@ -76,11 +76,12 @@ export default function PriorityPage() {
           variant="h3"
           fontWeight="bold"
           gutterBottom
+          sx={{ color: "white" }}
         >
           Priority Inbox
         </Typography>
 
-        <Box sx={{ mb: 4, width: 200 }}>
+        <Box sx={{ mb: 4, width: 220 }}>
 
           <FormControl
             fullWidth
@@ -132,7 +133,6 @@ export default function PriorityPage() {
             (notification) => (
 
             <Grid
-              item
               xs={12}
               md={6}
               lg={4}
@@ -142,7 +142,8 @@ export default function PriorityPage() {
               <Card
                 sx={{
                   borderRadius: 3,
-                  boxShadow: 5
+                  boxShadow: 5,
+                  height: "100%"
                 }}
               >
 
