@@ -14,7 +14,15 @@ The system fetches notifications, calculates priority scores, and displays impor
 
 ---
 
-# Features
+## Features
+
+- Priority-based notification ranking
+- Real-time notification updates using Socket.IO
+- Filter notifications by category
+- Responsive UI using Material UI
+- REST API integration with Express.js
+- Dark themed dashboard
+- Dynamic priority score updates
 
 ## Backend
 
