@@ -883,3 +883,307 @@ Together these significantly improve:
 - performance
 - user experience
 - database efficiency
+
+
+---
+
+# Stage 5
+
+# Reliable and Scalable Bulk Notification System
+
+## Existing Implementation
+
+```python
+function notify_all(student_ids: array, message: string):
+    for student_id in student_ids:
+
+        send_email(student_id, message)
+        save_to_db(student_id, message)
+        push_to_app(student_id, message)
+```
+
+---
+
+# Problems In Existing Implementation
+
+## 1. Sequential Processing
+
+Notifications are sent one by one.
+
+Problem:
+- Very slow for 50,000 students
+
+---
+
+## 2. No Failure Recovery
+
+If email sending fails midway:
+- remaining students may not receive notifications
+
+---
+
+## 3. No Retry Mechanism
+
+Temporary email API failures are not retried.
+
+---
+
+## 4. Blocking Architecture
+
+Email sending blocks database operations.
+
+---
+
+## 5. Poor Scalability
+
+Large notification campaigns overload the server.
+
+---
+
+## 6. No Queue Management
+
+Everything executes immediately.
+
+No asynchronous handling exists.
+
+---
+
+# Example Failure Scenario
+
+Logs indicate:
+- send_email failed for 200 students
+
+Problem:
+- System does not track failed users
+- Notifications become inconsistent
+
+Some students:
+- receive in-app notification
+- but do not receive email
+
+---
+
+# Recommended Solution
+
+Use:
+
+1. Message Queue
+2. Worker Services
+3. Retry Mechanism
+4. Asynchronous Processing
+
+Suggested Technologies:
+- RabbitMQ
+- Kafka
+- BullMQ
+- Redis Queue
+
+---
+
+# Improved Architecture
+
+HR Request
+↓
+Backend API
+↓
+Message Queue
+↓
+Worker Services
+↓
+Email Service / DB / WebSocket
+
+---
+
+# Why Queue-Based Processing?
+
+Benefits:
+- Faster response
+- Better scalability
+- Failure recovery
+- Retry support
+- Parallel processing
+
+---
+
+# Should DB Save And Email Sending Happen Together?
+
+No.
+
+They should be decoupled.
+
+---
+
+# Why Decoupling Is Better
+
+## Database Save
+
+Critical operation:
+- notification must always persist
+
+---
+
+## Email Sending
+
+External dependency:
+- may fail temporarily
+
+If coupled together:
+- one email failure may rollback entire process
+
+---
+
+# Recommended Flow
+
+1. Save notification to database
+2. Push task into queue
+3. Worker processes email asynchronously
+4. Retry failed emails automatically
+
+---
+
+# Retry Strategy
+
+If email sending fails:
+- retry 3 times
+- apply exponential backoff
+
+Example:
+- Retry after 1 second
+- Retry after 5 seconds
+- Retry after 15 seconds
+
+---
+
+# Revised Scalable Pseudocode
+
+```python
+function notify_all(student_ids, message):
+
+    for student_id in student_ids:
+
+        notification = {
+            student_id,
+            message,
+            status: "pending"
+        }
+
+        save_to_db(notification)
+
+        queue.push(notification)
+```
+
+---
+
+# Worker Service
+
+```python
+worker_process():
+
+    while queue not empty:
+
+        notification = queue.pop()
+
+        try:
+
+            send_email(
+                notification.student_id,
+                notification.message
+            )
+
+            push_to_app(
+                notification.student_id,
+                notification.message
+            )
+
+            update_status(notification, "success")
+
+        except Exception:
+
+            retry(notification)
+```
+
+---
+
+# Advantages Of Improved System
+
+## 1. High Scalability
+
+Can handle lakhs of notifications.
+
+---
+
+## 2. Faster API Response
+
+Backend immediately returns success.
+
+---
+
+## 3. Reliable Delivery
+
+Failed notifications are retried.
+
+---
+
+## 4. Fault Tolerance
+
+Temporary failures do not crash system.
+
+---
+
+## 5. Parallel Processing
+
+Multiple workers process notifications simultaneously.
+
+---
+
+# Additional Optimizations
+
+## Batch Processing
+
+Send notifications in batches.
+
+Example:
+- 1000 notifications per batch
+
+Benefits:
+- Reduced memory usage
+- Better throughput
+
+---
+
+## Dead Letter Queue (DLQ)
+
+Store permanently failed notifications separately.
+
+Benefits:
+- Easy debugging
+- Manual retry possible
+
+---
+
+## Monitoring
+
+Use:
+- Prometheus
+- Grafana
+- ELK Stack
+
+Track:
+- queue size
+- failures
+- retries
+- latency
+
+---
+
+# Final Recommendation
+
+Production-ready architecture should include:
+
+1. Queue-based asynchronous processing
+2. Retry mechanism
+3. Worker services
+4. Database persistence
+5. Dead letter queue
+6. Real-time WebSocket notifications
+7. Monitoring and logging
