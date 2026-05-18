@@ -79,6 +79,9 @@ npm install
 npm run dev
 ```
 
+# Then test
+  - http://localhost:5000/api/notifications/priority
+
 ---
 
 # How To Run Frontend
@@ -88,6 +91,9 @@ cd notification_app_fe
 npm install
 npm run dev
 ```
+
+# Then open
+  - http://localhost:3000/priority
 
 ---
 
