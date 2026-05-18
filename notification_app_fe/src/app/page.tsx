@@ -1,4 +1,8 @@
+
+
 "use client";
+
+import { io } from "socket.io-client";
 
 import {
   Box,
@@ -27,11 +31,35 @@ export default function Home() {
   const [notifications, setNotifications] =
     useState<Notification[]>([]);
 
-  useEffect(() => {
+    useEffect(() => {
 
-    fetchNotifications();
+      fetchNotifications();
 
-  }, []);
+      const socket = io(
+        "http://localhost:5000"
+      );
+
+      socket.on(
+        "new_notification",
+        (notification) => {
+
+          setNotifications((prev) => [
+
+            notification,
+            ...prev
+
+          ]);
+
+        }
+      );
+
+      return () => {
+
+        socket.disconnect();
+
+      };
+
+    }, []);
 
   const fetchNotifications = async () => {
 
