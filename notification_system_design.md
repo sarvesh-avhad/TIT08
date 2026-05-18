@@ -445,3 +445,205 @@ Frontend ↔ WebSocket Server ↔ Backend
 
 
 
+---
+
+# Stage 3
+
+# Query Optimization and Performance Analysis
+
+## Existing Query
+
+```sql
+SELECT * FROM notifications
+WHERE studentID = 1042 AND isRead = false
+ORDER BY createdAt ASC;
+```
+
+---
+
+# Is This Query Accurate?
+
+Yes, the query is logically correct because it fetches unread notifications of a specific student sorted by creation time.
+
+However, the query becomes slow when the database grows significantly.
+
+Current Scale:
+- 50,000 students
+- 5,000,000 notifications
+
+---
+
+# Why Is The Query Slow?
+
+The query is slow mainly because of:
+
+1. Full Table Scan
+   - Without proper indexes, the database scans millions of rows.
+
+2. Sorting Cost
+   - ORDER BY createdAt requires sorting large datasets.
+
+3. Multiple Conditions
+   - Filtering by studentID and isRead together increases lookup complexity.
+
+4. Large Dataset Size
+   - 5 million rows significantly increase query execution time.
+
+---
+
+# Optimized Solution
+
+## Add Composite Index
+
+```sql
+CREATE INDEX idx_notifications_student_read_created
+ON notifications(studentID, isRead, createdAt);
+```
+
+---
+
+# Why Composite Index?
+
+This index helps because:
+- studentID is filtered first
+- isRead is filtered second
+- createdAt supports sorting
+
+The database can directly locate unread notifications for a student without scanning the full table.
+
+---
+
+# Optimized Query
+
+```sql
+SELECT *
+FROM notifications
+WHERE studentID = 1042
+AND isRead = FALSE
+ORDER BY createdAt ASC;
+```
+
+---
+
+# Likely Computational Cost
+
+## Without Index
+
+Time Complexity:
+
+```text
+O(n)
+```
+
+The database scans nearly all rows.
+
+---
+
+## With Composite Index
+
+Time Complexity:
+
+```text
+O(log n)
+```
+
+The database performs indexed lookup instead of full scan.
+
+Performance improves significantly.
+
+---
+
+# Should We Add Indexes On Every Column?
+
+No, adding indexes on every column is not effective.
+
+---
+
+# Why Adding Too Many Indexes Is Bad
+
+## 1. Increased Storage Usage
+
+Indexes consume additional disk space.
+
+---
+
+## 2. Slower INSERT and UPDATE Operations
+
+Whenever data changes:
+- all indexes must also update
+
+This increases write latency.
+
+---
+
+## 3. Unused Indexes Waste Resources
+
+Some columns are rarely queried.
+
+Indexes on such columns provide no benefit.
+
+---
+
+# Best Practice
+
+Create indexes only on:
+- Frequently searched columns
+- Filtering columns
+- Sorting columns
+- JOIN columns
+
+---
+
+# Query To Find Students Who Received Placement Notifications In Last 7 Days
+
+```sql
+SELECT DISTINCT studentID
+FROM notifications
+WHERE notificationType = 'Placement'
+AND createdAt >= NOW() - INTERVAL '7 days';
+```
+
+---
+
+# Additional Optimizations
+
+## 1. Pagination
+
+```sql
+LIMIT 20 OFFSET 0
+```
+
+Reduces response payload.
+
+---
+
+## 2. Redis Caching
+
+Store frequently accessed unread notifications.
+
+Benefits:
+- Reduced DB load
+- Faster responses
+
+---
+
+## 3. Table Partitioning
+
+Partition notifications table by:
+- month
+- year
+- studentID range
+
+Improves large-scale query performance.
+
+---
+
+# Final Recommendation
+
+Best production strategy:
+
+1. Composite indexing
+2. Pagination
+3. Redis caching
+4. Partitioning
+5. Async notification processing
