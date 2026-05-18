@@ -1,44 +1,31 @@
 # Notification Priority System
 
-## Project Overview
-
-This project is a Full Stack Notification Priority System built using:
-
-- Next.js
-- React
-- Material UI
-- Express.js
-- Node.js
-
-The system fetches notifications, calculates priority scores, and displays important notifications in a responsive dashboard.
+A real-time smart notification dashboard that prioritizes notifications dynamically and updates the UI instantly using Socket.IO.
 
 ---
 
-## Features
+# Project Overview
 
-- Priority-based notification ranking
+This project is a Full Stack Notification Priority System built using modern web technologies.
+
+The system fetches notifications from the backend API, calculates priority scores, and displays important notifications in a clean and responsive dashboard.
+
+The application also supports real-time updates using Socket.IO, allowing notification priority values to update dynamically without refreshing the page.
+
+---
+
+# Features
+
 - Real-time notification updates using Socket.IO
-- Filter notifications by category
-- Responsive UI using Material UI
-- REST API integration with Express.js
-- Dark themed dashboard
+- Priority-based notification ranking
 - Dynamic priority score updates
-
-## Backend
-
-- REST API
-- Logging middleware
-- Priority calculation algorithm
-- Notification filtering
-- Mock notification service
-
-## Frontend
-
-- Responsive UI
-- Priority Inbox page
-- Notification cards
-- Filter by notification type
-- Material UI design
+- Filter notifications by category
+- Responsive dashboard UI
+- REST API integration
+- Material UI based design
+- Dark themed interface
+- Notification categorization
+- Backend logging middleware
 
 ---
 
@@ -47,13 +34,15 @@ The system fetches notifications, calculates priority scores, and displays impor
 ## Frontend
 - Next.js
 - React
+- TypeScript
 - Material UI
 - Axios
+- Socket.IO Client
 
 ## Backend
 - Node.js
 - Express.js
-- Axios
+- Socket.IO
 
 ---
 
@@ -62,12 +51,12 @@ The system fetches notifications, calculates priority scores, and displays impor
 ```text
 TIT08/
 │
-├── logging_middleware/
+├── logging middleware/
 ├── notification_app_be/
 ├── notification_app_fe/
 ├── notification_system_design.md
+├── screenshots/
 └── README.md
-```
 
 ---
 
@@ -87,7 +76,7 @@ npm install
 npm run dev
 ```
 
-# Then test
+# Backend API
   - http://localhost:5000/api/notifications/priority
 
 ---
@@ -100,7 +89,7 @@ npm install
 npm run dev
 ```
 
-# Then open
+# Frontend Dashboard
   - http://localhost:3000/priority
 
 ---
@@ -122,5 +111,5 @@ npm run dev
 # Author
 
   - Sarvesh Avhad
-  - sarveshavhad4@gmail.com
-  - 9307790671
+  - Email:- sarveshavhad4@gmail.com
+  - GitHub: https://github.com/sarvesh-avhad
