@@ -107,6 +107,6 @@ npm run dev
 
 # Author
 
-Sarvesh Avhad
-sarveshavhad4@gmail.com
-9307790671
+  - Sarvesh Avhad
+  - sarveshavhad4@gmail.com
+  - 9307790671
