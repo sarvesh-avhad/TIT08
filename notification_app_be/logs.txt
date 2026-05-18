@@ -6,3 +6,27 @@ URL: /
 [2026-05-18T08:55:03.254Z]
 Method: GET
 URL: /favicon.ico
+
+[2026-05-18T09:42:34.778Z]
+Method: GET
+URL: /
+
+[2026-05-18T09:42:35.559Z]
+Method: GET
+URL: /
+
+[2026-05-18T09:42:37.492Z]
+Method: GET
+URL: /
+
+[2026-05-18T09:43:03.049Z]
+Method: GET
+URL: /api/notifications/priority
+
+[2026-05-18T09:44:25.998Z]
+Method: GET
+URL: /api/notifications/priority
+
+[2026-05-18T09:44:29.278Z]
+Method: GET
+URL: /
