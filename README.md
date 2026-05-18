@@ -89,8 +89,27 @@ npm install
 npm run dev
 ```
 
-# Frontend Dashboard
-  - http://localhost:3000/priority
+## Main Dashboard
+
+http://localhost:3000
+
+
+Displays:
+- Real-time priority notifications
+- Dynamic notification updates
+- Notification ranking system
+
+---
+
+## Priority Inbox
+
+http://localhost:3000/priority
+
+
+Displays:
+- Filtered notifications
+- Category-based notification view
+- Responsive notification dashboard
 
 ---
 
